@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +22,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -54,7 +58,7 @@ public class MainWindowController implements Initializable {
     private TableColumn<GameBean, Integer> recentDurationCol;
 
     @FXML
-    private TableColumn<GameBean, String> recantDateCol;
+    private TableColumn<GameBean, String> recentDateCol;
 
     
     @FXML
@@ -68,7 +72,9 @@ public class MainWindowController implements Initializable {
             addRecord.setTitle("Add New Record");
             addRecord.setResizable(false);
             addRecord.show();
-            
+            addRecord.setOnHidden((WindowEvent closEvent) -> {
+                recentTableView.setItems(new SQLquerries().selectLogs());
+            });
         } catch (IOException ex) {
             Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println(ex.getMessage());
@@ -87,12 +93,24 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tabPane.tabMinWidthProperty().bind(root.widthProperty().divide(tabPane.getTabs().size()).subtract(23));
+        Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-R.ttf").toExternalForm(), 12);
+        Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-B.ttf").toExternalForm(), 12);
+        tableInit();
         recentTableViewInit();
     }
     
     private void recentTableViewInit(){
         SQLquerries querry = new SQLquerries();
+        ObservableList<GameBean> logs = querry.selectLogs();
+        recentTableView.setItems(logs);
+    }
+    
+    private void tableInit(){
+        recentNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        recentDurationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        recentDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
         
+        recentTableView.setId("recentTable");
     }
     
 }
