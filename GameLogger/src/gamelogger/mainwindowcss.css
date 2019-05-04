@@ -1,0 +1,12 @@
+.main{
+    
+}
+
+@font-face{
+    font-family: Table;
+    src: url(gamelogger/fonts/Ubuntu-R.ttf);
+}
+
+#recentTable{
+    -fx-font-family: Ubuntu;
+}
