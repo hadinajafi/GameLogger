@@ -5,6 +5,7 @@
  */
 package gamelogger;
 
+
 import gamelogger.database.SQLquerries;
 import java.io.IOException;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class GameLogger extends Application {
             try{
                 root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
                 Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("mainwindowcss.css").toExternalForm());
                 primaryStage.setTitle("Game Logger");
                 primaryStage.setScene(scene);
                 primaryStage.setResizable(false);
