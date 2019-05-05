@@ -8,6 +8,8 @@ package gamelogger;
 import gamelogger.database.SQLquerries;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,7 +82,11 @@ public class MainWindowController implements Initializable {
             addRecord.show();
             addRecord.setOnHidden((WindowEvent closEvent) -> {
                 recentTableView.setItems(new SQLquerries().selectLogs());
+                totalGameTimeLabelInit();
             });
+            
+            //refresh the total duration gameplay label
+            totalGameTimeLabelInit();
         } catch (IOException ex) {
             Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println(ex.getMessage());
@@ -104,7 +110,37 @@ public class MainWindowController implements Initializable {
         tableInit(); //initialize the components
         recentTableViewInit();//initialize the data
         menuItemsInit();//initialize menu items
+        totalGameTimeLabelInit();
     }
+    
+    private void totalGameTimeLabelInit(){
+        int totalDuration = new SQLquerries().selectTotalGamesDuration(LocalDate.now().format(DateTimeFormatter.ofPattern("M/d/yyyy")));
+        totalGameplayLabel.setText(formattedDuration(totalDuration));
+        
+    }
+    
+    /**
+     * 
+     * @param duration to formatting it to int hours and int minutes
+     * @return Formatted text
+     */
+    private String formattedDuration(int duration){
+        String formattedDuration;
+        if(duration <= 0)
+            formattedDuration = "0";
+        else if(duration < 60)
+            formattedDuration = duration + " minutes";
+        else{
+            int result = duration / 60;
+            int remains = duration % 60;
+            if(remains != 0)
+                formattedDuration = result + " hour(s) & " + remains + " minutes";
+            else
+                formattedDuration = result + " hour(s)";
+        }
+        return formattedDuration;
+    }
+    
     /**
      * Initialize the data form database
      */
@@ -143,6 +179,9 @@ public class MainWindowController implements Initializable {
             GameBean selectedItem = recentTableView.getSelectionModel().getSelectedItem();
             query.deleteLog(selectedItem.getId());
             recentTableView.getItems().remove(selectedItem);
+           
+            //refresh the total duration gameplay label
+            totalGameTimeLabelInit();
         });
     }
     
