@@ -17,8 +17,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -55,10 +58,13 @@ public class MainWindowController implements Initializable {
     private TableColumn<GameBean, String> recentNameCol;
 
     @FXML
-    private TableColumn<GameBean, Integer> recentDurationCol;
+    private TableColumn<GameBean, String> recentDurationCol;
 
     @FXML
     private TableColumn<GameBean, String> recentDateCol;
+    @FXML
+    private BarChart<?, ?> summaryChart;
+    private MenuItem deleteItem = new MenuItem("Delete");
 
     
     @FXML
@@ -95,22 +101,49 @@ public class MainWindowController implements Initializable {
         tabPane.tabMinWidthProperty().bind(root.widthProperty().divide(tabPane.getTabs().size()).subtract(23));
         Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-R.ttf").toExternalForm(), 12);
         Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-B.ttf").toExternalForm(), 12);
-        tableInit();
-        recentTableViewInit();
+        tableInit(); //initialize the components
+        recentTableViewInit();//initialize the data
+        menuItemsInit();//initialize menu items
     }
-    
+    /**
+     * Initialize the data form database
+     */
     private void recentTableViewInit(){
         SQLquerries querry = new SQLquerries();
         ObservableList<GameBean> logs = querry.selectLogs();
         recentTableView.setItems(logs);
     }
-    
+    /**
+     * Initialize the table components, context menu, column value factory.
+     */
     private void tableInit(){
+        //set value factory to the table columns
         recentNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         recentDurationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
         recentDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
-        
+        //add cutom font
         recentTableView.setId("recentTable");
+        
+        //initialize the formatted value for the duratoin column
+        recentDurationCol.setComparator((String o1, String o2) -> {
+            Integer int1 = GameBean.formattedValues.get(o1);
+            Integer int2 = GameBean.formattedValues.get(o2);
+            return int1.compareTo(int2);
+        });
+        
+        //add context menu to the recent table
+        recentTableView.setContextMenu(new ContextMenu(deleteItem));
+    }
+    /**
+     * Initialize the actions to the menu items.
+     */
+    private void menuItemsInit(){
+        deleteItem.setOnAction(event -> {
+            SQLquerries query = new SQLquerries();
+            GameBean selectedItem = recentTableView.getSelectionModel().getSelectedItem();
+            query.deleteLog(selectedItem.getId());
+            recentTableView.getItems().remove(selectedItem);
+        });
     }
     
 }
