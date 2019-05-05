@@ -164,8 +164,18 @@ public class SQLquerries {
         }
     }
     
-    public void deleteLog(){
-        
+    public void deleteLog(int id){
+        String sql = "DELETE FROM logs WHERE id = ?";
+        try{
+            Connection conn = this.connect();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
     }
     
     public void deleteGame(){
@@ -241,13 +251,13 @@ public class SQLquerries {
      */
     public ObservableList<GameBean> selectLogs(){
         ObservableList<GameBean> logs = FXCollections.observableArrayList();
-        String sql = "SELECT name, duration, indate FROM logs";
+        String sql = "SELECT * FROM logs";
         try{
             Connection conn = this.connect();
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
-                logs.add(new GameBean(rs.getString("name"), rs.getInt("duration"), rs.getString("indate")));
+                logs.add(new GameBean(rs.getInt("id"), rs.getString("name"), rs.getInt("duration"), rs.getString("indate")));
             }
         } catch (SQLException ex) {
             Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
