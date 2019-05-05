@@ -3,6 +3,7 @@ package gamelogger;
 
 import java.util.HashMap;
 import java.util.Map;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
@@ -10,12 +11,14 @@ import javafx.beans.property.SimpleStringProperty;
  * @author hawdi
  */
 public class GameBean {
+    private SimpleIntegerProperty id;
     private SimpleStringProperty name;
     private SimpleStringProperty date;
     private SimpleStringProperty duration;
     public static Map<String, Integer> formattedValues = new HashMap<>();
     
-    public GameBean(String name, int duration, String date){
+    public GameBean(int id, String name, int duration, String date){
+        this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
         this.duration = new SimpleStringProperty(formattedDuration(duration));
         this.date = new SimpleStringProperty(date);
@@ -31,6 +34,10 @@ public class GameBean {
     
     public String getDate(){
         return date.get();
+    }
+    
+    public Integer getId(){
+        return id.get();
     }
     
     private String formattedDuration(int duration){
