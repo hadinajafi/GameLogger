@@ -92,7 +92,7 @@ public class SQLquerries {
             //create table logs to store gameplay logs
             //id is a foreign key and references to the gameid in gamelist table.
             sql = "CREATE TABLE IF NOT EXISTS logs ("
-                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, duration integer DEFAULT 0, date TEXT NOT NULL);";
+                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, duration integer DEFAULT 0, indate TEXT NOT NULL);";
             st.execute(sql); //create table logs
             //create table user to save configurations
             sql = "CREATE TABLE IF NOT EXISTS configs("
@@ -112,7 +112,7 @@ public class SQLquerries {
      * @param date is the date of the play time.
      */
     public void insertLog(String name, int duration, String date){
-        String sql = "INSERT INTO logs(name, duration, date) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO logs(name, duration, indate) VALUES (?, ?, ?)";
         try{
             Connection conn = this.connect();
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -235,16 +235,19 @@ public class SQLquerries {
         }
         return userConfigs;
     }
-    
+    /**
+     * 
+     * @return An Observable contains all data from Logs table
+     */
     public ObservableList<GameBean> selectLogs(){
         ObservableList<GameBean> logs = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM logs";
+        String sql = "SELECT name, duration, indate FROM logs";
         try{
             Connection conn = this.connect();
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
-                logs.add(new GameBean(rs.getInt("id"), rs.getString("name"), rs.getInt("duration"), rs.getString("date")));
+                logs.add(new GameBean(rs.getString("name"), rs.getInt("duration"), rs.getString("indate")));
             }
         } catch (SQLException ex) {
             Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
