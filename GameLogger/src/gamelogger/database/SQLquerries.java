@@ -58,7 +58,6 @@ public class SQLquerries {
             Connection conn = this.connect();
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("a new db has been created!");
             }
         } catch (SQLException ex) {
             Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
@@ -259,10 +258,36 @@ public class SQLquerries {
             while(rs.next()){
                 logs.add(new GameBean(rs.getInt("id"), rs.getString("name"), rs.getInt("duration"), rs.getString("indate")));
             }
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
         return logs;
+    }
+    
+    /**
+     * Select Total gameplay duration, on a specific date
+     * @param date formatted date strting is month/day/year: mm/dd/yyyy
+     * @return Returns Integer of total duration
+     */
+    public int selectTotalGamesDuration(String date){
+        String sql = "SELECT duration FROM logs WHERE indate = ?";
+        int result = 0;
+        try{
+            Connection co = this.connect();
+            PreparedStatement ps = co.prepareStatement(sql);
+            ps.setString(1, date);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()){
+                result += rs.getInt("duration");
+            }
+            co.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+        return result;
     }
 }
