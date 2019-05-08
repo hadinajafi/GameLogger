@@ -10,9 +10,9 @@
 
 <AnchorPane id="AnchorPane" prefHeight="349.0" prefWidth="582.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gamelogger.FirstInteractionLayoutController">
    <children>
-      <Label layoutX="110.0" layoutY="41.0" prefHeight="25.0" prefWidth="363.0" text="Complete the setup to continue" AnchorPane.bottomAnchor="283.0" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="109.0" AnchorPane.topAnchor="41.0">
+      <Label alignment="CENTER" layoutX="10.0" layoutY="42.0" prefHeight="25.0" prefWidth="565.0" text="Add At least one game the setup to continue" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="42.0">
          <font>
-            <Font name="System Bold" size="20.0" />
+            <Font name="System Bold" size="17.0" />
          </font>
       </Label>
       <HBox alignment="TOP_CENTER" layoutX="70.0" layoutY="90.0" prefHeight="100.0" prefWidth="443.0" spacing="10.0" AnchorPane.bottomAnchor="168.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="70.0">
