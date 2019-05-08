@@ -68,6 +68,7 @@ public class FirstInteractionLayoutController implements Initializable {
             }
             gameList.setItems(names);   //refresh the list for showing remaining items
         });
+        //Add key event handler, to add games from text field by pressing ENTER. fast and easy
         gameNameTxt.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
             if(event.getCode() == KeyCode.ENTER){
                 names.add(gameNameTxt.getText());
@@ -81,10 +82,10 @@ public class FirstInteractionLayoutController implements Initializable {
         //otherwise if list is empty, the continue button is set to disable again
         names.addListener((ListChangeListener.Change<? extends String> c) -> {
             if(names.isEmpty()){
-                continueButton.setDisable(true);
+                continueButton.setDisable(true); //disable continue button because of list is empty
             }
                 else{
-                continueButton.setDisable(false);
+                continueButton.setDisable(false);   //enable continue button when list is not empty
             }
         });
     }    
@@ -93,7 +94,7 @@ public class FirstInteractionLayoutController implements Initializable {
     void addGameButtonActionPerformed(ActionEvent event) {
         names.add(gameNameTxt.getText());
         gameList.setItems(names);
-        gameNameTxt.setText(null);
+        gameNameTxt.setText(null); //emptying the textfield when new game added
     }
 
     @FXML
