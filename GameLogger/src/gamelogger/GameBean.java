@@ -1,4 +1,8 @@
-
+/**
+ * Game Bean is a java Bean for table and whole project. Game Bean make working with attributes easier.
+ * The bean contains id, name, date, duration attributes
+ * duration should formatted for reading easily, because the duration saved as minutes, for larger values, the formatter converts it to hours and minutes.
+ */
 package gamelogger;
 
 import java.util.HashMap;
