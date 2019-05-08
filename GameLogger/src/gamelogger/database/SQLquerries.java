@@ -1,4 +1,6 @@
-
+/**
+ * This class contains all required SQLite queries for saving and retrieving data from database
+ */
 package gamelogger.database;
 
 import gamelogger.GameBean;
