@@ -44,12 +44,12 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <BarChart fx:id="summaryChart" prefHeight="279.0" prefWidth="385.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <BarChart fx:id="summaryChart" prefHeight="306.0" prefWidth="529.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="163.0" AnchorPane.topAnchor="0.0">
                                             <xAxis>
-                                              <CategoryAxis side="BOTTOM" fx:id="gameAxis"/>
+                                              <CategoryAxis fx:id="gameAxis" side="BOTTOM" />
                                             </xAxis>
                                             <yAxis>
-                                              <NumberAxis side="LEFT" fx:id="numAxis" />
+                                              <NumberAxis fx:id="numAxis" side="LEFT" />
                                             </yAxis>
                                           </BarChart>
                                        </children></AnchorPane>
