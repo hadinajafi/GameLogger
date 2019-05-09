@@ -71,7 +71,7 @@ public class MainWindowController implements Initializable {
     private CategoryAxis gameAxis;
     @FXML
     private NumberAxis numAxis;
-    private XYChart.Series gamePlay = new XYChart.Series<>();
+    private XYChart.Series gamePlay;
     
     private MenuItem deleteItem = new MenuItem("Delete");
 
@@ -90,7 +90,9 @@ public class MainWindowController implements Initializable {
             addRecord.setOnHidden((WindowEvent closEvent) -> {
                 recentTableView.setItems(new SQLquerries().selectLogs()); //refresh the table
                 //refresh data for the total label gameplay and chart
-                totalGameTimeLabelInit();   
+                totalGameTimeLabelInit(); 
+                gamePlay.getData().clear();
+                summaryChart.getData().removeAll(gamePlay);
                 barChartInit();
             });
             
@@ -116,6 +118,7 @@ public class MainWindowController implements Initializable {
         tabPane.tabMinWidthProperty().bind(root.widthProperty().divide(tabPane.getTabs().size()).subtract(23));
         Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-R.ttf").toExternalForm(), 12);
         Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-B.ttf").toExternalForm(), 12);
+        Font.loadFont(getClass().getResource("/gamelogger/fonts/Sahel.ttf").toExternalForm(), 12);
         tableInit(); //initialize the components
         barChartInit(); //initialize the bar chart
         recentTableViewInit();//initialize the data
@@ -194,6 +197,8 @@ public class MainWindowController implements Initializable {
            
             //refresh the total duration gameplay label & chart
             totalGameTimeLabelInit();
+            gamePlay.getData().clear();
+            summaryChart.getData().removeAll(gamePlay);
             barChartInit();
         });
     }
@@ -202,12 +207,12 @@ public class MainWindowController implements Initializable {
      * Initialize bar chart in chart tab.
      */
     private void barChartInit(){
+        summaryChart.setId("barChart"); //add css id to the chart
         gameAxis.setLabel("Game");
         //gameAxis.setTickLabelRotation(90);
         numAxis.setLabel("Play Time (minutes)");
+        gamePlay = new XYChart.Series<>();
         gamePlay.setName("Statistics");
-        gamePlay.getData().clear();
-        summaryChart.getData().removeAll(gamePlay);
         
         SQLquerries query = new SQLquerries();
         ObservableList<GameBean> logs = query.selectName_Duration();    //observable list contains all gamebeans with valid name & duration values. !!! id & date is null
