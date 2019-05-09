@@ -28,12 +28,21 @@ public class GameBean {
         this.date = new SimpleStringProperty(date);
     }
     
+    public GameBean(String name, int duration){
+        this.name = new SimpleStringProperty(name);
+        this.duration = new SimpleStringProperty(String.valueOf(duration));
+    }
+    
     public String getName(){
         return name.get();
     }
     
     public String getDuration(){
         return duration.get();
+    }
+    
+    public int getIntegerDuration(){
+        return Integer.parseInt(duration.get());
     }
     
     public String getDate(){
