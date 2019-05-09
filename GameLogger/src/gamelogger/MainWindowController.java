@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gamelogger;
 
 import gamelogger.database.SQLquerries;
@@ -10,6 +5,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +15,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -65,7 +66,11 @@ public class MainWindowController implements Initializable {
     @FXML
     private TableColumn<GameBean, String> recentDateCol;
     @FXML
-    private BarChart<?, ?> summaryChart;
+    private BarChart<String, Number> summaryChart;
+    @FXML
+    private CategoryAxis gameAxis;
+    @FXML
+    private NumberAxis numAxis;
     private MenuItem deleteItem = new MenuItem("Delete");
 
     
@@ -108,14 +113,17 @@ public class MainWindowController implements Initializable {
         Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-R.ttf").toExternalForm(), 12);
         Font.loadFont(getClass().getResource("/gamelogger/fonts/Ubuntu-B.ttf").toExternalForm(), 12);
         tableInit(); //initialize the components
+        barChartInit(); //initialize the bar chart
         recentTableViewInit();//initialize the data
         menuItemsInit();//initialize menu items
         totalGameTimeLabelInit();
     }
-    
+    /**
+     * Set total game play today duration to the 'totalDuration' label
+     */
     private void totalGameTimeLabelInit(){
         int totalDuration = new SQLquerries().selectTotalGamesDuration(LocalDate.now().format(DateTimeFormatter.ofPattern("M/d/yyyy")));
-        totalGameplayLabel.setText(formattedDuration(totalDuration));
+        totalGameplayLabel.setText(_formattedDuration(totalDuration));
         
     }
     
@@ -124,7 +132,7 @@ public class MainWindowController implements Initializable {
      * @param duration to formatting it to int hours and int minutes
      * @return Formatted text
      */
-    private String formattedDuration(int duration){
+    private String _formattedDuration(int duration){
         String formattedDuration;
         if(duration <= 0)
             formattedDuration = "0";
@@ -183,6 +191,39 @@ public class MainWindowController implements Initializable {
             //refresh the total duration gameplay label
             totalGameTimeLabelInit();
         });
+    }
+    
+    /**
+     * Initialize bar chart in chart tab.
+     */
+    private void barChartInit(){
+        gameAxis.setLabel("Game");
+        //gameAxis.setTickLabelRotation(90);
+        numAxis.setLabel("Play Time (minutes)");
+        XYChart.Series gamePlay = new XYChart.Series<>();
+        
+        
+        SQLquerries query = new SQLquerries();
+        ObservableList<GameBean> logs = query.selectName_Duration();
+        ObservableList<String> names = query.selectGameNames();
+        Map<String, Integer> result = new HashMap<>();
+        
+        for(GameBean log: logs){
+            if(result.isEmpty() || !result.containsKey(log.getName())){
+                result.put(log.getName(), log.getIntegerDuration());
+            }
+            else{
+                int value = result.get(log.getName());
+                value += log.getIntegerDuration();
+                result.replace(log.getName(), value);
+            }
+        }
+        
+        for(String name: names){
+            if(result.get(name) != null)
+                gamePlay.getData().add(new XYChart.Data<>(name, result.get(name)));
+        }
+        summaryChart.getData().add(gamePlay);
     }
     
 }
