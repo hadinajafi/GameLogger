@@ -71,6 +71,8 @@ public class MainWindowController implements Initializable {
     private CategoryAxis gameAxis;
     @FXML
     private NumberAxis numAxis;
+    private XYChart.Series gamePlay = new XYChart.Series<>();
+    
     private MenuItem deleteItem = new MenuItem("Delete");
 
     
@@ -86,8 +88,10 @@ public class MainWindowController implements Initializable {
             addRecord.setResizable(false);
             addRecord.show();
             addRecord.setOnHidden((WindowEvent closEvent) -> {
-                recentTableView.setItems(new SQLquerries().selectLogs());
-                totalGameTimeLabelInit();
+                recentTableView.setItems(new SQLquerries().selectLogs()); //refresh the table
+                //refresh data for the total label gameplay and chart
+                totalGameTimeLabelInit();   
+                barChartInit();
             });
             
             //refresh the total duration gameplay label
@@ -129,8 +133,8 @@ public class MainWindowController implements Initializable {
     
     /**
      * 
-     * @param duration to formatting it to int hours and int minutes
-     * @return Formatted text
+     * @param duration to formatting it to int hours and int minutes. like <u>12 minutes</u> or <u>2 hours & 20 minutes</u>.
+     * @return (String) Formatted text
      */
     private String _formattedDuration(int duration){
         String formattedDuration;
@@ -184,12 +188,13 @@ public class MainWindowController implements Initializable {
     private void menuItemsInit(){
         deleteItem.setOnAction(event -> {
             SQLquerries query = new SQLquerries();
-            GameBean selectedItem = recentTableView.getSelectionModel().getSelectedItem();
-            query.deleteLog(selectedItem.getId());
-            recentTableView.getItems().remove(selectedItem);
+            GameBean selectedItem = recentTableView.getSelectionModel().getSelectedItem();  //get selected bean
+            query.deleteLog(selectedItem.getId());  //remove selected item from database
+            recentTableView.getItems().remove(selectedItem); //remove selected item from table
            
-            //refresh the total duration gameplay label
+            //refresh the total duration gameplay label & chart
             totalGameTimeLabelInit();
+            barChartInit();
         });
     }
     
@@ -200,12 +205,13 @@ public class MainWindowController implements Initializable {
         gameAxis.setLabel("Game");
         //gameAxis.setTickLabelRotation(90);
         numAxis.setLabel("Play Time (minutes)");
-        XYChart.Series gamePlay = new XYChart.Series<>();
-        
+        gamePlay.setName("Statistics");
+        gamePlay.getData().clear();
+        summaryChart.getData().removeAll(gamePlay);
         
         SQLquerries query = new SQLquerries();
-        ObservableList<GameBean> logs = query.selectName_Duration();
-        ObservableList<String> names = query.selectGameNames();
+        ObservableList<GameBean> logs = query.selectName_Duration();    //observable list contains all gamebeans with valid name & duration values. !!! id & date is null
+        ObservableList<String> names = query.selectGameNames(); //names contains all game names in database
         Map<String, Integer> result = new HashMap<>();
         
         for(GameBean log: logs){
