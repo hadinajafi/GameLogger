@@ -292,4 +292,22 @@ public class SQLquerries {
         }
         return result;
     }
+    
+    public ObservableList<GameBean> selectName_Duration(){
+        String sql = "SELECT name, duration FROM logs ORDER BY name";
+        ObservableList<GameBean> logs = FXCollections.observableArrayList();
+        try{
+            Connection conn = this.connect();
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                logs.add(new GameBean(rs.getString("name"), rs.getInt("duration")));
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+        return logs;
+    }
 }
