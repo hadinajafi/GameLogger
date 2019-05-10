@@ -46,9 +46,14 @@ public class SettingsLayoutController implements Initializable {
     //buttons actions
     @FXML
     void addNewBtnOnAction(ActionEvent event) {
-        SQLquerries query = new SQLquerries();
-        query.insertNewGame(nameTextField.getText());
-        gameList.add(nameTextField.getText());
+        if (nameTextField.getText() != null && !"".equals(nameTextField.getText())) {
+            SQLquerries query = new SQLquerries();
+            query.insertNewGame(nameTextField.getText());
+            gameList.add(nameTextField.getText());
+        }
+        else{
+            nameTextField.setPromptText("Enter something to add!");
+        }
     }
 
     @FXML
