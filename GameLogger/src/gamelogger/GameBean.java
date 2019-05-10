@@ -33,26 +33,55 @@ public class GameBean {
         this.duration = new SimpleStringProperty(String.valueOf(duration));
     }
     
+    /**
+     * 
+     * @param id is id of the record
+     * @param name of the record
+     */
+    public GameBean(int id, String name){
+        this.id = new SimpleIntegerProperty(id);
+        this.name = new SimpleStringProperty(name);
+    }
+    /**
+     * 
+     * @return Name of the bean
+     */
     public String getName(){
         return name.get();
     }
-    
+    /**
+     * 
+     * @return Duration of the bean, a formatted string
+     */
     public String getDuration(){
         return duration.get();
     }
-    
+    /**
+     * 
+     * @return Integer value of Duration, without format
+     */
     public int getIntegerDuration(){
         return Integer.parseInt(duration.get());
     }
-    
+    /**
+     * 
+     * @return Date of the bean saved in database
+     */
     public String getDate(){
         return date.get();
     }
-    
+    /**
+     * 
+     * @return ID of the bean
+     */
     public Integer getId(){
         return id.get();
     }
-    
+    /**
+     * 
+     * @param duration as a parameter to format it to formatted String, change minutes to hours. e.g. 150 minutes -> <b>2 hours & 30 minutes</b>
+     * @return 
+     */
     private String formattedDuration(int duration){
         String formattedDuration;
         if(duration <= 0)
