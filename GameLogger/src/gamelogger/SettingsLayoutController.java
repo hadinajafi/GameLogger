@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
  * @author hadi
  */
 public class SettingsLayoutController implements Initializable {
+
     //components & attributes
     @FXML
     private ListView<String> gameListView;
@@ -40,6 +41,7 @@ public class SettingsLayoutController implements Initializable {
     private Button renameBtn;
     //list view observable list
     private ObservableList<String> gameList;
+    private ObservableList<GameBean> gameBeans;
 
     //buttons actions
     @FXML
@@ -52,6 +54,15 @@ public class SettingsLayoutController implements Initializable {
     @FXML
     void deleteBtnOnAction(ActionEvent event) {
 
+        if (gameListView.getSelectionModel().getSelectedItem() != null) {
+            SQLquerries query = new SQLquerries();
+            gameBeans = query.selectGame();
+            int selectedIndex = gameListView.getSelectionModel().getSelectedIndex();
+            query.deleteGame(gameBeans.get(selectedIndex).getId(), gameBeans.get(selectedIndex).getName());
+            gameBeans.remove(selectedIndex);
+            gameList.remove(selectedIndex);
+        }
+
     }
 
     @FXML
@@ -59,18 +70,21 @@ public class SettingsLayoutController implements Initializable {
 
     }
 
-    
     /**
      * Initializes the controller class.
+     *
      * @param url
      * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         listViewInit();
-    }   
-    
-    private void listViewInit(){
+    }
+
+    /**
+     * Initialize the list view items and load game names from the database
+     */
+    private void listViewInit() {
         SQLquerries query = new SQLquerries();
         gameList = query.selectGameNames();
         gameListView.setItems(gameList);
@@ -79,5 +93,5 @@ public class SettingsLayoutController implements Initializable {
             gameListView.setItems(query.selectGameNames());
         });
     }
-    
+
 }
