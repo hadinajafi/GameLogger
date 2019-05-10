@@ -178,9 +178,51 @@ public class SQLquerries {
             ex.printStackTrace();
         }
     }
+    /**
+     * 
+     * @param id is the gameid in the gamelist table, to delete the game from the game list
+     * @param name is the name in the logs table to delete all inserted logs with this name
+     */
+    public void deleteGame(int id, String name){
+        String sql = "DELETE FROM gamelist WHERE gameid = ?";
+        try{
+            Connection conn = connect();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate(); //remove game from gamelist
+            
+            sql = "DELETE FROM logs WHERE name = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.executeUpdate(); //remove game logs from the logs table
+            
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
+        }
+    }
     
-    public void deleteGame(){
-        
+    /**
+     * 
+     * @return ObservableList contains all data from the gamelist table
+     */
+    public ObservableList<GameBean> selectGame(){
+        String sql = "SELECT * FROM gamelist";
+        ObservableList<GameBean> games = FXCollections.observableArrayList();
+        try{
+            Connection conn = this.connect();
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                games.add(new GameBean(rs.getInt("gameid"), rs.getString("name")));
+            }
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLquerries.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+        return games;
     }
     
     /**
