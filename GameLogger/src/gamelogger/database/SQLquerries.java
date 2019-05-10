@@ -165,6 +165,10 @@ public class SQLquerries {
         }
     }
     
+    /**
+     * 
+     * @param id in the logs table
+     */
     public void deleteLog(int id){
         String sql = "DELETE FROM logs WHERE id = ?";
         try{
@@ -178,6 +182,7 @@ public class SQLquerries {
             ex.printStackTrace();
         }
     }
+    
     /**
      * 
      * @param id is the gameid in the gamelist table, to delete the game from the game list
@@ -227,7 +232,7 @@ public class SQLquerries {
     
     /**
      * 
-     * @return ArrayList<Integer> for all game IDs in the gamelist table.
+     * @return ArrayList for all game IDs in the gamelist table.
      */
     public ArrayList<Integer> selectGameId(){
         ArrayList<Integer> gameIDs = new ArrayList<>();
@@ -268,6 +273,7 @@ public class SQLquerries {
         }
         return games;
     }
+    
     /**
      * Getting config and its value from the configs table
      * @return Map<String ConfigName, Integer value>, String config name, integer value for config.
@@ -288,6 +294,7 @@ public class SQLquerries {
         }
         return userConfigs;
     }
+    
     /**
      * 
      * @return An Observable contains all data from Logs table
@@ -335,6 +342,10 @@ public class SQLquerries {
         return result;
     }
     
+    /**
+     * 
+     * @return ObservableList of GameBean, contains Name & Duration only. id & date will be null
+    */
     public ObservableList<GameBean> selectName_Duration(){
         String sql = "SELECT name, duration FROM logs ORDER BY name";
         ObservableList<GameBean> logs = FXCollections.observableArrayList();
@@ -352,4 +363,6 @@ public class SQLquerries {
         }
         return logs;
     }
+    
+    
 }
